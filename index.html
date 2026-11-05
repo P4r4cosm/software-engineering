@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регламент разработки и ввода в эксплуатацию: Система управления продажами пищевых продуктов</title>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --primary-bg: #eff6ff;
+            --secondary: #0d9488;
+            --dark: #0f172a;
+            --gray: #475569;
+            --light-gray: #f8fafc;
+            --border: #e2e8f0;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--dark);
+            background: #f1f5f9;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            max-width: 1500px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+        /* Боковая навигация */
+        aside.sidebar {
+            width: 320px;
+            background: #ffffff;
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+        .sidebar-brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-subtitle {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+        .nav-group-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            margin: 16px 8px 8px 8px;
+        }
+        .sidebar nav a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-bottom: 2px;
+        }
+        .sidebar nav a:hover {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+        /* Основной контент */
+        main.content {
+            flex: 1;
+            padding: 40px 48px;
+            max-width: 1100px;
+            background: #ffffff;
+            margin: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+        }
+        header.doc-header {
+            border-bottom: 2px solid var(--primary-bg);
+            padding-bottom: 24px;
+            margin-bottom: 32px;
+        }
+        .doc-badge {
+            display: inline-block;
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: var(--dark);
+            line-height: 1.25;
+            margin-bottom: 12px;
+        }
+        .doc-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 0.875rem;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+        .doc-meta span strong { color: var(--dark); }
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin: 40px 0 20px 0;
+            scroll-margin-top: 24px;
+        }
+        h3 {
+            font-size: 1.2rem;
+            color: var(--dark);
+            margin: 24px 0 12px 0;
+        }
+        h4 {
+            font-size: 1rem;
+            color: var(--gray);
+            margin: 16px 0 8px 0;
+        }
+        p { margin-bottom: 14px; }
+        ul, ol { margin: 0 0 16px 24px; }
+        li { margin-bottom: 6px; }
+        /* Карточки и блоки */
+        .callout {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-bg);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .callout.warning {
+            border-left-color: var(--warning);
+            background: #fffbeb;
+        }
+        .callout.danger {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
+        .callout.success {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        /* Таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #f8fafc;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        tr:hover td { background: #fdfdfd; }
+        /* Кодовые блоки и схемы */
+        pre, code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+        }
+        code {
+            background: #f1f5f9;
+            color: #b91c1c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        /* Диаграммы на CSS */
+        .tree-view {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre;
+            margin: 16px 0;
+            overflow-x: auto;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-arch { background: #fee2e2; color: #991b1b; }
+        .badge-mod { background: #e0f2fe; color: #075985; }
+        .badge-imp { background: #fef3c7; color: #92400e; }
+        .placeholder {
+            background: #fef08a;
+            color: #854d0e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Боковая панель навигации -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            🛒 СУПП: Регламент
+        </div>
+        <div class="sidebar-subtitle">
+            Система управления продажами пищевых продуктов
+        </div>
+        <nav>
+            <div class="nav-group-title">Введение</div>
+            <a href="#intro">Общие положения и цель</a>
+            <a href="#domain">Специфика предметной области</a>
+
+            <div class="nav-group-title">Обязательные разделы</div>
+            <a href="#sec1">1. ЖЦ разработки и состав</a>
+            <a href="#sec2">2. ЖЦ проекта (MSF)</a>
+            <a href="#sec3">3. Управление проектом и риски</a>
+            <a href="#sec4">4. Артефакты Azure DevOps и DoD</a>
+            <a href="#sec5">5. Ветвление и версии ПО</a>
+            <a href="#sec6">6. Версионность базы данных</a>
+            <a href="#sec7">7. Интеграция тестирования</a>
+            <a href="#sec8">8. Формирование релизов и деплой</a>
+            <a href="#sec9">9. Ввод в эксплуатацию</a>
+
+            <div class="nav-group-title">Команда и контакты</div>
+            <a href="#team">Состав проектной группы</a>
+        </nav>
+    </aside>
+
+    <!-- Основной текст документа -->
+    <main class="content">
+        <header class="doc-header">
+            <div class="doc-badge">Официальный регламент проекта</div>
+            <h1>Регламент процесса разработки и ввода в эксплуатацию программной системы</h1>
+            <div class="doc-meta">
+                <span><strong>Проект:</strong> Система управления продажами пищевых продуктов (Food Sales Management System)</span>
+                <span><strong>Команда:</strong> Учебная группа № <span class="placeholder">ИСП-301</span></span>
+                <span><strong>Платформа:</strong> Azure DevOps Server / Git</span>
+                <span><strong>Статус:</strong> Согласовано</span>
+            </div>
+        </header>
+
+        <!-- ВВЕДЕНИЕ -->
+        <section id="intro">
+            <h2>Введение. Назначение документа</h2>
+            <p>
+                Настоящий документ устанавливает единые правила, стандарты и процедуры организации жизненного цикла 
+                разработки, контроля версий, обеспечения качества, формирования релизов и ввода в эксплуатацию 
+                программной системы <strong>«Система управления продажами пищевых продуктов»</strong>.
+            </p>
+            <p>
+                Регламент обязателен для исполнения всеми участниками проектной группы и базируется на методологиях 
+                <strong>Microsoft Solutions Framework (MSF)</strong>, <strong>Extreme Programming (XP)</strong> 
+                и стандартах управления версиями Team Foundation Version Control / Azure DevOps Repos.
+            </p>
+        </section>
+
+        <!-- СПЕЦИФИКА ПРЕДМЕТНОЙ ОБЛАСТИ -->
+        <section id="domain">
+            <h2>Специфика предметной области: Продажа пищевых продуктов</h2>
+            <p>
+                Программная система автоматизирует процессы розничных и мелкооптовых продаж продуктов питания. 
+                Особенности продовольственной торговли определяют критические инженерные требования:
+            </p>
+            <ul>
+                <li><strong>Партионный учет и контроль сроков годности (принцип FEFO — First Expired, First Out):</strong> система обязана отслеживать даты производства и сроки годности каждой партии товара, блокируя продажу просроченной продукции на кассовом узле.</li>
+                <li><strong>Непрерывность кассовых операций (High Availability):</strong> простой кассового узла магазина недопустим. Операции пробития чеков и расчета должны происходить со временем отклика &lt; 0.5 сек.</li>
+                <li><strong>Запрет отрицательных остатков:</strong> блокировка отпуска товара при отсутствии фактического остатка на выбранном складе.</li>
+                <li><strong>Интеграция с торговым оборудованием:</strong> сканеры штрихкодов, весы с печатью этикеток, фискальные регистраторы.</li>
+            </ul>
+        </section>
+
+        <!-- РАЗДЕЛ 1 -->
+        <section id="sec1">
+            <h2>1. Выбор и обоснование ЖЦ разработки процесса. Ролевой состав</h2>
+            
+            <h3>1.1. Выбор методологии процесса разработки</h3>
+            <p>
+                Для организации инженерного процесса внутри команды выбран легковесный гибкий фреймворк 
+                <strong>Extreme Programming (XP, Экстремальное программирование)</strong>.
+            </p>
+
+            <div class="callout">
+                <div class="callout-title">💡 Обоснование выбора XP для студенческой группы</div>
+                <p>
+                    В соответствии с указанием руководителя <em>(«если люди не ходят, лучше XP»)</em>, 
+                    главным риском студенческого коллектива является неравномерная посещаемость и риск внезапного 
+                    выбывания участников. В тяжеловесных процессах (RUP, Waterfall) узкая специализация приводит к остановке проекта.
+                </p>
+                <p><strong>XP устраняет «Bus Factor» за счет следующих практик:</strong></p>
+                <ol>
+                    <li><strong>Коллективное владение кодом (Collective Code Ownership):</strong> в проекте нет «чужого кода». Любой участник команды имеет право и обязанность модифицировать любой модуль системы продаж (кассу, склад, расчет скидок).</li>
+                    <li><strong>Парное программирование (Pair Programming):</strong> работа в парах гарантирует, что контекст задачи знают как минимум двое. Если один студент пропускает занятия, второй продолжает работу без потери темпа.</li>
+                    <li><strong>Разработка через тестирование (TDD) и CI:</strong> наличие исчерпывающих автоматических тестов гарантирует, что участник, вернувшийся после пропуска, не сломает бизнес-логику коллег.</li>
+                    <li><strong>Простой дизайн (Simple Design):</strong> исключает оверинжиниринг на ранних этапах.</li>
+                </ol>
+            </div>
+
+            <h3>1.2. Ролевой состав команды (3–5 человек) и совмещение ролей</h3>
+            <p>В малой проектной команде роли участников совмещаются:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Роль в проекте</th>
+                        <th>ФИО студента (заполнить)</th>
+                        <th>Ключевые обязанности в системе продаж</th>
+                        <th>Совмещаемая роль</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Менеджер проекта (Tracker)</strong></td>
+                        <td><span class="placeholder">Студент 1</span></td>
+                        <td>Ведение бэклога в Azure DevOps, фасилитация стендапов, контроль сроков (Original Estimate, Remaining Work).</td>
+                        <td>Системный аналитик</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ведущий разработчик / Архитектор</strong></td>
+                        <td><span class="placeholder">Студент 2</span></td>
+                        <td>Проектирование схемы БД (партии, чеки), транзакционная изоляция, утверждение PR / Code Review.</td>
+                        <td>Backend-разработчик</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Разработчик (Developer)</strong></td>
+                        <td><span class="placeholder">Студент 3</span></td>
+                        <td>Разработка интерфейса кассира, модуль интеграции со сканером, расчет скидок.</td>
+                        <td>Тестировщик Unit</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Инженер по качеству (QA)</strong></td>
+                        <td><span class="placeholder">Студент 4</span></td>
+                        <td>Разработка тест-планов, ручное тестирование сценариев просрочки, автотесты API.</td>
+                        <td>Технический писатель</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DevOps / Release Engineer</strong></td>
+                        <td><span class="placeholder">Студент 5 (или Студент 2)</span></td>
+                        <td>Настройка CI/CD в Azure Pipelines, сборка DACPAC/SNAP баз данных, развертывание релизов.</td>
+                        <td>Разработчик БД</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>1.3. Регламент динамического изменения ролей</h3>
+            <ul>
+                <li><strong>Матрица взаимозаменяемости:</strong> в случае невыхода на связь участника более 24 часов его задачи со статусом <code>Active</code> переводятся Менеджером на дублирующего разработчика.</li>
+                <li><strong>Автоматический пропуск Code Review:</strong> согласно стандарту (Лекция 10), если на активности <code>Development</code> и <code>Code Review</code> назначен один и тот же исполнитель, шаг ревью пропускается автоматически.</li>
+                <li><strong>Ротация пар:</strong> состав пар разработчиков меняется каждые 3–4 дня для выравнивания знаний по всем подсистемам.</li>
+            </ul>
+        </section>
+
+        <!-- РАЗДЕЛ 2 -->
+        <section id="sec2">
+            <h2>2. Выбор и обоснование ЖЦ проекта</h2>
+            
+            <h3>2.1. Разграничение понятий</h3>
+            <p>
+                <strong>ЖЦ процесса разработки</strong> (Раздел 1) регламентирует внутреннюю ежедневную деятельность инженеров (XP, TDD, коммиты).<br>
+                <strong>ЖЦ проекта</strong> определяет макроструктуру фаз проекта во времени от замысла до передачи заказчику и критерии прохождения контрольных точек (Milestones).
+            </p>
+
+            <h3>2.2. Обоснование фазово-итерационной модели MSF Process Model</h3>
+            <p>
+                Для системы управления продажами выбрана модель <strong>Microsoft Solutions Framework (MSF)</strong>, 
+                состоящая из 5 фаз с контрольными вехами:
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Фаза MSF</th>
+                        <th>Ключевые активности в проекте продаж продуктов</th>
+                        <th>Контрольная веха (Milestone)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1. Выработка концепции (Envisioning)</strong></td>
+                        <td>Формирование бизнес-требований к розничным продажам, определение границ проекта (Scope), оценка первоначальных рисков порчи данных.</td>
+                        <td><code>Концепция проекта утверждена</code> (Vision &amp; Scope Approved)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2. Планирование (Planning)</strong></td>
+                        <td>Проектирование структуры БД (товары, склады, чеки), описание PBI в Azure DevOps, разработка архитектурного плана и стратегии миграции.</td>
+                        <td><code>План проекта утвержден</code> (Project Plan Approved)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3. Разработка (Developing)</strong></td>
+                        <td>Итеративная реализация спринтами (по 2 недели): ядро номенклатуры $\rightarrow$ кассовый узел $\rightarrow$ партионный учет FEFO $\rightarrow$ отчеты.</td>
+                        <td><code>Код заморожен</code> (Scope Complete / Code Freeze)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4. Стабилизация (Stabilizing)</strong></td>
+                        <td>Сквозное тестирование в ветке Release Candidate, проверка отказоустойчивости кассы, устранение дефектов, верификация скриптов миграции БД.</td>
+                        <td><code>Релиз готов к выпуску</code> (Zero Bug Bounce)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5. Развертывание (Deploying)</strong></td>
+                        <td>Установка в магазине, первичное наполнение справочников, обучение кассиров, пилотная эксплуатация, передача в Service Desk.</td>
+                        <td><code>Ввод в эксплуатацию завершен</code> (Deployment Complete)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- РАЗДЕЛ 3 -->
+        <section id="sec3">
+            <h2>3. Выбор и обоснование процесса, методики или практик управления</h2>
+            
+            <h3>3.1. Практики оперативного управления (Scrum-спринты)</h3>
+            <ul>
+                <li><strong>Длина спринта:</strong> 2 календарные недели.</li>
+                <li><strong>Оценка трудозатрат:</strong> оценка в часах методом Planning Poker. Обязательное заполнение полей рабочего элемента: <code>Original Estimate</code> (план), <code>Remaining Work</code> (остаток, ежедневно), <code>Effort</code> (факт).</li>
+                <li><strong>Ежедневный стендап (15 минут):</strong> фиксация прогресса и оперативное выявление препятствий (<code>Impediment</code>).</li>
+                <li><strong>Ретроспектива спринта (Лекция 10):</strong> закрытие спринта созданием рабочего элемента <code>Retrospective</code> со снимками <code>Task retrospective</code> для корректного расчета списания часов при переносе незавершенных задач.</li>
+            </ul>
+
+            <h3>3.2. Матрица управления проектными рисками (по методологии MSF)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Описание риска</th>
+                        <th>P (1-5)</th>
+                        <th>I (1-5)</th>
+                        <th>Ранг (P*I)</th>
+                        <th>Стратегия предотвращения (Mitigation)</th>
+                        <th>План реагирования при наступлении (Contingency)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>R-01</strong></td>
+                        <td>Продажа просроченной продукции из-за ошибки в логике FEFO</td>
+                        <td>3</td>
+                        <td>5</td>
+                        <td><strong>15</strong></td>
+                        <td>100% покрытие Unit-тестами методов выборки партий; валидация даты на уровне SQL-триггера БД.</td>
+                        <td>Экстренный Hotfix ветки Release, автоматическая блокировка кассового интерфейса на пробитие спорного артикула.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R-02</strong></td>
+                        <td>Конфликты блокировок при одновременном списании остатка с касс</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td><strong>12</strong></td>
+                        <td>Использование пессимистических или версионных блокировок (SELECT FOR UPDATE) в транзакциях.</td>
+                        <td>Откат транзакции с понятным сообщением кассиру: «Товар только что выкуплен на соседней кассе».</td>
+                    </tr>
+                    <tr>
+                        <td><strong>R-03</strong></td>
+                        <td>Невыход разработчика на связь перед дедлайном сдачи</td>
+                        <td>4</td>
+                        <td>3</td>
+                        <td><strong>12</strong></td>
+                        <td>Обязательное ежедневное выталкивание (Push) кода в ветку Feature; парная работа.</td>
+                        <td>Передача ветки второму участнику пары согласно матрице взаимозаменяемости.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- РАЗДЕЛ 4 -->
+        <section id="sec4">
+            <h2>4. Описание Артефактов проекта, их иерархии и определение точки окончания задачи (DoD)</h2>
+            
+            <h3>4.1. Иерархия рабочих элементов (Work Items) в Azure DevOps</h3>
+            <div class="tree-view">
+Epic: Управление продажами и складским учетом продуктов питания
+  │
+  ├── Feature: Партионный учет и контроль сроков годности (Feature Type = Module)
+  │     ├── Estimation Point (Total Effort = 64h, Dev Effort = 40h)
+  │     │
+  │     ├── PBI-101: Регистрация поступления партии скоропортящегося товара с фиксацией даты годности
+  │     │     ├── Task 1: Requirements (Анализ полей сертификатов и дат)
+  │     │     ├── Task 2: Development (Создание сущности Batch, миграция БД)
+  │     │     ├── Task 3: Code Review (Архитектурный контроль)
+  │     │     ├── Task 4: Inner Deployment (Выкладка на Dev-стенд)
+  │     │     └── Task 5: Testing (Проверка граничных дат в UI)
+  │     │
+  │     └── PBI-102: Блокировка добавления в чек товара с истекшим сроком
+  │           └── Tasks (Requirements -> Development -> Code Review -> Deploy -> Testing)
+  │
+  └── Feature: Кассовый интерфейс и оформление фискального чека (Feature Type = Architectural)
+            </div>
+
+            <h3>4.2. Жизненный цикл задачи и механизм команды #FIX (Лекция 10)</h3>
+            <p>
+                По каждому PBI задачи выполняются строго в заданной последовательности. 
+                В случае обнаружения дефектов процесс регламентирован следующими правилами:
+            </p>
+            <ul>
+                <li><strong>Замечания на этапе Code Review:</strong> ревьюер пишет в поле <code>History</code> команду <code>#FIX</code>, название правки и описание. Создается связанный рабочий элемент <code>REVISION PBI</code> с задачей <code>Development</code>. Родительская задача Code Review блокируется: <code>Blocked = Yes</code>.</li>
+                <li><strong>Дефекты на этапе Testing:</strong> тестировщик пишет в <code>History</code> команду <code>#FIX</code> со шагами воспроизведения. Создается рабочий элемент <code>REVISION BUG</code>, блокирующий задачу тестирования (<code>Blocked = Yes</code>). После исправления дефекта создается задача <code>Inner Deployment</code> для обновления стенда.</li>
+            </ul>
+
+            <h3>4.3. Определение точки окончания задачи (Definition of Done — DoD)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Уровень</th>
+                        <th>Критерии завершения (Definition of Done)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Task (Development)</strong></td>
+                        <td>Код написан, Unit-тесты пройдены, Changeset привязан к Task, <code>Remaining Work = 0</code>, статус <code>Closed</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task (Code Review)</strong></td>
+                        <td>Замечания отсутствуют либо все <code>REVISION</code> устранены, блокировка снята, статус <code>Closed</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Product Backlog Item (PBI)</strong></td>
+                        <td>Все 5 подзадач закрыты, функционал проверен на Dev-сервере по тест-плану, критических багов нет, PBI переведен в <code>Done</code> (или <code>Committed</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sprint / Release</strong></td>
+                        <td>Код слит в Release Candidate, применены миграции БД, автотесты зеленые, сгенерированы Release Notes, получено подтверждение от Product Owner.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- РАЗДЕЛ 5 -->
+        <section id="sec5">
+            <h2>5. Управление структурой версий проекта, иерархией веток и слиянием</h2>
+            
+            <h3>5.1. Рекомендованная структура веток Source Control (Лекция 11)</h3>
+            <div class="tree-view">
+[Main] ────────────────────────────────────────────────────────────────────────► (Базовый ствол)
+   │
+   ├─► [Development] ──────────────────────────────────────────────────────────► (Интеграция разработки)
+   │      │
+   │      ├─► [Feature_BatchInventory] ─── (Разработка учета партий)
+   │      └─► [Feature_CashierPOS] ─────── (Разработка кассы)
+   │
+   └─► [Release Candidate] ────────────────────────────────────────────────────► (Тестовый стенд магазина)
+          │
+          └─► [Release] ───────────────────────────────────────────────────────► (Промышленная среда касс)
+            </div>
+
+            <div class="callout warning">
+                <div class="callout-title">⚠️ Главное правило промышленной ветки</div>
+                <p>Ветка <strong>Release</strong> всегда строго соответствует версии, работающей в промышленной эксплуатации на кассах магазинов! Прямые коммиты в Main и Release запрещены политиками ветвления (Branch Policies).</p>
+            </div>
+
+            <h3>5.2. Правила слияния (Merge Policies)</h3>
+            <ol>
+                <li><strong>Ввод новой фичи:</strong> <code>Feature</code> $\rightarrow$ <code>Main</code> $\rightarrow$ <code>Release Candidate (RC)</code>. На тестовом сервере проводится приемочное тестирование. После подтверждения готовности код из <code>RC</code> переносится в <code>Release</code>.</li>
+                <li><strong>Вывод новой функциональности на тест:</strong> перед выкладкой новой ветки <code>Feature</code> в нее обязательно подтягиваются свежие изменения из <code>RC</code>.</li>
+                <li><strong>Исправление багов в поддержке (Support Hotfix):</strong> баг правится в ветке <code>RC</code>, тестируется, и после подтверждения заказчиком протаскивается в <code>Release</code> <strong>и во все активные ветки <code>Feature</code></strong>.</li>
+                <li><strong>Комментарий к коммиту слияния:</strong> строго по шаблону <code>Merge from &lt;Source&gt; to &lt;Target&gt;</code> с привязкой задачи на слияние и сохранением номеров в поле <code>Changesets</code>.</li>
+            </ol>
+
+            <h3>5.3. Схема формирования номеров версий</h3>
+            <p>Формат версии ПО (согласно Лекции 11): <code>&lt;ИмяВетки&gt;_&lt;Major&gt;.&lt;Minor&gt;.&lt;Revision&gt;.&lt;BuildNumber&gt;</code></p>
+            <p><em>Пример боевого релиза:</em> <code>Release_1.4.2.1450</code></p>
+            <ul>
+                <li><strong>Major (1):</strong> мажорная версия. Увеличивается при смене архитектуры (<code>Feature Type = Architectural</code>), минорные сбрасываются.</li>
+                <li><strong>Minor (4):</strong> количество завершенных PBI. Инкрементируется на +1 автоматически при переводе задачи разработки PBI в статус <code>Done</code>.</li>
+                <li><strong>Revision (2):</strong> счетчик исправлений дефектов (REVISION / багфиксов).</li>
+                <li><strong>BuildNumber (1450):</strong> номер автоматической сборки CI или номер Changeset.</li>
+            </ul>
+        </section>
+
+        <!-- РАЗДЕЛ 6 -->
+        <section id="sec6">
+            <h2>6. Управление версионностью структурой данных хранилищ (БД)</h2>
+            
+            <h3>6.1. Организация веток базы данных в Source Control</h3>
+            <p>Схемы БД хранятся параллельно с исходным кодом в репозитории:</p>
+            <ul>
+                <li><code>Prod Copy DB</code> — снимок рабочей схемы промышленной базы магазина.</li>
+                <li><code>RC DB</code> — схема и тестовые данные для стенда приемочного тестирования.</li>
+                <li><code>Feature DB</code> — изолированная схема для разработки фичи.</li>
+            </ul>
+
+            <h3>6.2. Регламент переноса изменений через SNAP-файлы (Лекция 11)</h3>
+            <div class="callout danger">
+                <div class="callout-title">🛑 Правило слияния базы данных</div>
+                <p><strong>«Слияние БД выполняется через SNAP-файл (DACPAC / Schema Snapshot) с обязательной проверкой на БД той версии, к которой приливаются изменения.»</strong></p>
+                <p>Запрещается применять миграции напрямую к промышленной базе без предварительной тестовой накатки на актуальной копии <code>Prod Copy DB</code>.</p>
+            </div>
+
+            <h3>6.3. Синхронизация версий миграций с номерами релизов</h3>
+            <p>Каждый SQL-скрипт именуется строго в соответствии с номером версии ПО:</p>
+            <pre><code>db/migrations/
+├── V1_0_0__Initial_Products_And_Categories.sql
+├── V1_1_0__Create_Batches_And_Expiration_Dates.sql
+├── V1_2_0__Add_POS_Check_And_Check_Items.sql
+└── V1_2_1__Fix_Rounding_Tax_Issue.sql</code></pre>
+
+            <p><strong>Политика безопасных изменений схемы:</strong></p>
+            <ul>
+                <li>Запрещены деструктивные операции (DROP COLUMN, DROP TABLE) в рамках минорных версий.</li>
+                <li>Применение паттерна Expand &amp; Contract: сначала добавляется новая колонка (например, <code>BarcodeEan13</code>), старая помечается устаревшей, и лишь через мажорный релиз старое поле удаляется.</li>
+                <li><em>Исключение перетирания данных:</em> перетирание БД на сервере категорически запрещено. Любое изменение выполняется инкрементальными обратимыми скриптами.</li>
+            </ul>
+        </section>
+
+        <!-- РАЗДЕЛ 7 -->
+        <section id="sec7">
+            <h2>7. Описание процессов интеграции автоматизированного и ручного тестирования</h2>
+            
+            <h3>7.1. Шесть этапов процесса тестирования (Лекция 11)</h3>
+            <ol>
+                <li><strong>7.1. Поверхностное тестирование (Smoke Test):</strong> экспресс-проверка базовой работоспособности после каждого билда (запуск кассы, авторизация кассира, открытие смены).</li>
+                <li><strong>7.2. Формирование тест-плана:</strong> создание тест-кейсов в Azure Test Plans по каждому PBI спринта.</li>
+                <li><strong>7.3. Ручное визуальное тестирование:</strong> тестирование удобства кассового интерфейса, сканирования штрихкодов, проверка печати чеков.</li>
+                <li><strong>7.4. Покрытие автоматическими тестами:</strong> сквозные UI/E2E-тесты (Playwright/Selenium) на сценарии: добавление товара в корзину, расчет скидки, отказ в продаже просрочки.</li>
+                <li><strong>7.5. Модульное (Unit) тестирование серверной части:</strong> покрытие бизнес-логики расчета налогов, проверки сроков годности $Date_{exp} \ge Today$ и списания остатков (целевое покрытие &ge; 80%).</li>
+                <li><strong>7.6. Доработка тест-плана:</strong> актуализация проверок после устранения выявленных багов.</li>
+            </ol>
+
+            <h3>7.2. Автоматизация в CI пайплайне (Лекция 11, стр. 12)</h3>
+            <p>
+                При каждой сборке и выкладке на внутренний тестовый сервер конвейер автоматически формирует 
+                и рассылает участникам проектной группы <strong>Отчет тест-плана</strong>:
+            </p>
+            <ul>
+                <li>Список новых задач, готовых к тестированию в данной сборке.</li>
+                <li>Список задач, <strong>исключенных из тестирования</strong> (не прошедших этап Code Review).</li>
+                <li>Список исправленных дефектов (<code>Revision Bugs</code>).</li>
+                <li>Перечень Changeset'ов со времени последней успешной сборки.</li>
+            </ul>
+
+            <h3>7.3. Причины закрытия неактуальных дефектов</h3>
+            <p>Если баг не подтвердился при повторном тестировании ветки Release Candidate, он закрывается с указанием причины в поле <code>Reason</code>:</p>
+            <ul>
+                <li><code>As Designed</code> — функционал работает согласно измененным требованиям;</li>
+                <li><code>Cannot Reproduce</code> — дефект не воспроизводится на актуальной сборке;</li>
+                <li><code>Duplicate</code> — дефект уже зарегистрирован под другим номером.</li>
+            </ul>
+        </section>
+
+        <!-- РАЗДЕЛ 8 -->
+        <section id="sec8">
+            <h2>8. Описание процессов и требований формирования выпусков версий, процедура развёртывания</h2>
+            
+            <h3>8.1. Критерии готовности выпуска (Release Quality Gates)</h3>
+            <ul>
+                <li>Все PBI, запланированные в релиз, находятся в статусе <code>Done</code>;</li>
+                <li>Все задачи Code Review закрыты, отсутствуют открытые флаги блокировки <code>Blocked = Yes</code>;</li>
+                <li>100% модульных и регрессионных тестов завершились успешно;</li>
+                <li>Отсутствуют открытые баги с критичностью <code>Critical</code> или <code>Blocker</code>;</li>
+                <li>Скрипты миграции схемы БД успешно прошли тестовое применение на копии промышленной БД.</li>
+            </ul>
+
+            <h3>8.2. Конвейер окружений развертывания</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Среда</th>
+                        <th>Назначение</th>
+                        <th>Триггер развертывания</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Inner Dev Test</strong></td>
+                        <td>Внутренний сервер команды разработчиков для оперативной проверки задач.</td>
+                        <td>Автоматически при коммите в ветку <code>Development</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Stage (RC Test)</strong></td>
+                        <td>Тестовый стенд магазина, полностью воспроизводящий промышленное окружение.</td>
+                        <td>Автоматически при слиянии изменений в ветку <code>Release Candidate</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Production</strong></td>
+                        <td>Рабочие кассовые узлы и центральный сервер магазина.</td>
+                        <td>Вручную технологом/DevOps после сдачи вехи и согласования окна обновления.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>8.3. Автоматическая генерация Release Notes (Stage)</h3>
+            <p>
+                При выкладке сборки на сервер Stage автоматически генерируется документ Release Notes, 
+                включающий список реализованных PBI, номера закрытых багов и перечень затронутых таблиц БД. 
+                Задачи в активности <code>Stage Deployment</code> закрываются автоматически.
+            </p>
+
+            <h3>8.4. Процедура развертывания и план отката (Rollback Plan)</h3>
+            <ol>
+                <li>Фиксация контрольной точки: создание полного бэкапа базы данных Production и бинарных файлов перед обновлением.</li>
+                <li>Перевод кассовых узлов в режим технического обслуживания (off-hours, с 23:00 до 06:00).</li>
+                <li>Применение инкрементальных скриптов миграции БД.</li>
+                <li>Развертывание бинарных пакетов новой версии сервисов.</li>
+                <li>Прогон 5-минутного Smoke-теста (пробитие тестового чека, возврат).</li>
+                <li><strong>План отката:</strong> при сбое сборки или падении Smoke-теста в течение 10 минут выполняется восстановление БД из бэкапа и возврат на предыдущий стабильный релиз.</li>
+            </ol>
+        </section>
+
+        <!-- РАЗДЕЛ 9 -->
+        <section id="sec9">
+            <h2>9. Описание процедуры ввода в эксплуатацию с учетом двух вариантов</h2>
+            
+            <div class="callout">
+                <div class="callout-title">📋 Общая нормативная процедура</div>
+                <p>Ввод в эксплуатацию регламентируется стандартом ГОСТ 34.601 и фазой Deploying модели MSF: подготовка инфраструктуры, обучение кассиров и товароведов, приемо-сдаточные испытания (ПСИ) и перевод на поддержку в Service Desk (с типами элементов <code>Bug</code> и <code>Task</code> согласно Лекции 12).</p>
+            </div>
+
+            <h3>9.1. Вариант А: Замена существующей системы (Legacy Replacement — замена 1С / Excel)</h3>
+            <p>Ключевая задача — не допустить остановки продаж магазина и сохранить непрерывность учета остатков:</p>
+            <ol>
+                <li><strong>Аудит и сопоставление структур данных (Data Mapping):</strong> составление карты соответствия справочников старой системы (номенклатура, штрихкоды, поставщики) структуре новой БД. Очистка базы от дубликатов и неликвидных позиций.</li>
+                <li><strong>Разработка процедур миграции (ETL):</strong> написание скриптов автоматизированного переноса данных партий, остатков и цен; тестовый прогон миграции с замером времени выполнения.</li>
+                <li><strong>Стратегия перехода — Параллельная эксплуатация (Parallel Run):</strong>
+                    <ul>
+                        <li>В течение 7 календарных дней кассиры параллельно дублируют чеки в обеих системах (либо чеки бьются в новой, а в конце дня сверяется Z-отчет и баланс остатков).</li>
+                        <li>Ежевечерняя сверка контрольных сумм по выручке, НДС и складским списаниям.</li>
+                    </ul>
+                </li>
+                <li><strong>Момент переключения (Cutover):</strong> проведение генеральной инвентаризации в ночь с воскресенья на понедельник, финальная дельта-выгрузка остатков, блокировка старой системы в режим <code>Read-Only</code>.</li>
+                <li><strong>Вывод старой системы из эксплуатации (Decommissioning):</strong> сохранение архивного слепка старой БД на изолированный носитель, отключение интеграционных шлюзов.</li>
+            </ol>
+
+            <h3>9.2. Вариант Б: Ввод в эксплуатацию новой системы (Greenfield Deployment — открытие нового супермаркета)</h3>
+            <p>Исторические данные отсутствуют, упор делается на первичное наполнение справочников и подготовку персонала «с нуля»:</p>
+            <ol>
+                <li><strong>Первичное наполнение нормативно-справочной информации (НСИ):</strong>
+                    <ul>
+                        <li>Импорт классификаторов товаров, категорий, единиц измерения;</li>
+                        <li>Заведение номенклатуры с штрихкодами производителей;</li>
+                        <li>Ввод начальных партий товаров от поставщиков с обязательным указанием сроков годности и цен реализации;</li>
+                        <li>Заведение учетных записей кассиров, старших кассиров и товароведов с разграничением прав доступа.</li>
+                    </ul>
+                </li>
+                <li><strong>Обучение эксплуатационного персонала:</strong> проведение тренингов для кассиров (сканирование, безналичная оплата, аннулирование позиций, возврат продуктов) под руководством Технического писателя / QA.</li>
+                <li><strong>Опытно-промышленная эксплуатация (Пилотное внедрение):</strong> тестовая работа магазина в течение 3–5 дней в режиме «технического открытия» с ограниченным потоком покупателей; оперативное дежурство инженера на месте.</li>
+                <li><strong>Приемо-сдаточные испытания (ПСИ):</strong> выполнение контрольных сценариев по протоколу ПСИ в присутствии заказчика (преподавателя); подписание акта приемки.</li>
+                <li><strong>Перевод в режим промышленной эксплуатации:</strong> регистрация системы в службе Service Desk (Лекция 12); фиксация условий SLA: время реакции на критический сбой кассы не более 15 минут.</li>
+            </ol>
+        </section>
+
+        <!-- РАЗДЕЛ КОМАНДА -->
+        <section id="team">
+            <h2>Лист согласования и состав команды</h2>
+            <p>Настоящий регламент утвержден всеми участниками проектной группы:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Роль</th>
+                        <th>ФИО студента</th>
+                        <th>Подпись / Статус</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Менеджер проекта</td>
+                        <td><span class="placeholder">Студент 1 (ФИО)</span></td>
+                        <td>Утверждено</td>
+                        <td>05.11.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Ведущий разработчик / Архитектор</td>
+                        <td><span class="placeholder">Студент 2 (ФИО)</span></td>
+                        <td>Согласовано</td>
+                        <td>05.11.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Разработчик</td>
+                        <td><span class="placeholder">Студент 3 (ФИО)</span></td>
+                        <td>Согласовано</td>
+                        <td>05.11.2026</td>
+                    </tr>
+                    <tr>
+                        <td>Инженер по качеству (QA)</td>
+                        <td><span class="placeholder">Студент 4 (ФИО)</span></td>
+                        <td>Согласовано</td>
+                        <td>05.11.2026</td>
+                    </tr>
+                    <tr>
+                        <td>DevOps / Release Engineer</td>
+                        <td><span class="placeholder">Студент 5 (ФИО)</span></td>
+                        <td>Согласовано</td>
+                        <td>05.11.2026</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>
